@@ -1,80 +1,87 @@
-const input = document.getElementById("menuInput");
-const addButton = document.getElementById("addButton");
-const pickButton = document.getElementById("pickButton");
-const resetButton = document.getElementById("resetButton");
-const menuList = document.getElementById("menuList");
-const resultDiv = document.getElementById("result");
+const menuInput = document.getElementById('menu-input');
+const addMenuBtn = document.getElementById('add-menu');
+const pickMenuBtn = document.getElementById('pick-menu');
+const resetBtn = document.getElementById('reset');
+const menuList = document.getElementById('menu-list');
+const result = document.getElementById('result');
 
-// 메뉴 불러오기
-let menus = JSON.parse(localStorage.getItem("menus")) || [];
-renderMenus();
-
-// 메뉴 추가 (Enter 또는 버튼)
-input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") addMenu();
-});
-addButton.addEventListener("click", addMenu);
-
+// 메뉴 추가
 function addMenu() {
-  const value = input.value.trim();
-  if (value === "") return;
-  menus.push(value);
-  localStorage.setItem("menus", JSON.stringify(menus));
-  input.value = "";
-  renderMenus();
-}
+  const menu = menuInput.value.trim();
+  if (menu === '') return;
 
-// 메뉴 삭제 (스와이프)
-function enableSwipeToDelete(li, index) {
-  let startX = 0;
-  li.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
+  const li = document.createElement('li');
+  li.className = 'menu-item';
+  li.innerHTML = `
+    <span class="menu-text">${menu}</span>
+    <button class="delete-btn">✖</button>
+  `;
+
+  menuList.appendChild(li);
+  menuInput.value = '';
+
+  // 삭제 버튼
+  li.querySelector('.delete-btn').addEventListener('click', () => {
+    li.remove();
   });
 
-  li.addEventListener("touchend", (e) => {
-    const endX = e.changedTouches[0].clientX;
-    if (startX - endX > 80) {
-      menus.splice(index, 1);
-      localStorage.setItem("menus", JSON.stringify(menus));
-      renderMenus();
+  // 스와이프 삭제 기능
+  let startX = 0, currentX = 0, holding = false;
+
+  li.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    holding = true;
+    li.classList.add('swipe-hold');
+  });
+
+  li.addEventListener('touchmove', e => {
+    if (!holding) return;
+    currentX = e.touches[0].clientX;
+    const diff = currentX - startX;
+    if (diff < 0) {
+      li.style.transform = `translateX(${diff}px)`;
+    }
+  });
+
+  li.addEventListener('touchend', () => {
+    holding = false;
+    li.classList.remove('swipe-hold');
+    const diff = currentX - startX;
+    if (diff < -100) {
+      li.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+      li.style.transform = 'translateX(-100%)';
+      li.style.opacity = '0';
+      setTimeout(() => li.remove(), 300);
+    } else {
+      li.style.transition = 'transform 0.2s ease';
+      li.style.transform = 'translateX(0)';
     }
   });
 }
 
-// 메뉴 렌더링
-function renderMenus() {
-  menuList.innerHTML = "";
-  menus.forEach((menu, index) => {
-    const li = document.createElement("li");
-    li.textContent = menu;
-    enableSwipeToDelete(li, index);
-    menuList.appendChild(li);
-  });
-}
+// Enter 키로도 추가
+menuInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter') addMenu();
+});
 
-// 랜덤 선택
-pickButton.addEventListener("click", () => {
-  if (menus.length === 0) {
-    alert("메뉴를 입력해주세요");
-    return;
-  }
+addMenuBtn.addEventListener('click', addMenu);
 
-  resultDiv.classList.remove("hidden");
-  resultDiv.innerHTML = "🍽️ 오늘의 메뉴는...";
+// 메뉴 뽑기
+pickMenuBtn.addEventListener('click', () => {
+  const items = document.querySelectorAll('.menu-text');
+  if (items.length === 0) return;
 
-  setTimeout(() => {
-    const randomIndex = Math.floor(Math.random() * menus.length);
-    const pick = menus[randomIndex];
-    resultDiv.innerHTML = `🍽️ <strong>오늘의 메뉴는 ${pick}입니다!</strong>`;
-  }, 700);
+  const i = Math.floor(Math.random() * items.length);
+  const selected = items[i].textContent;
+
+  result.textContent = `🍽️ 오늘의 메뉴는 ${selected}입니다!`;
+  result.classList.remove('hidden');
+  result.classList.add('result');
 });
 
 // 초기화
-resetButton.addEventListener("click", () => {
-  if (confirm("모든 메뉴를 삭제하시겠어요?")) {
-    menus = [];
-    localStorage.removeItem("menus");
-    resultDiv.classList.add("hidden");
-    renderMenus();
-  }
+resetBtn.addEventListener('click', () => {
+  menuList.innerHTML = '';
+  result.textContent = '';
+  result.classList.add('hidden');
 });
