@@ -2,21 +2,23 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>오늘 뭐먹지?</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
     <h1>오늘 뭐먹지?</h1>
-    <input type="text" id="menu-input" placeholder="메뉴를 입력하세요" />
-    <button id="add-menu">메뉴 추가</button>
-    <ul id="menu-list"></ul>
-    <div class="button-group">
-      <button id="pick-menu">오늘 뭐먹지?</button>
-      <button id="reset">초기화</button>
+    <div class="input-group">
+      <input type="text" id="menuInput" placeholder="메뉴를 입력하세요" />
+      <button id="addButton">메뉴 추가</button>
     </div>
-    <div id="result" class="result hidden"></div>
+    <ul id="menuList"></ul>
+    <div class="buttons">
+      <button id="randomButton">오늘 뭐먹지?</button>
+      <button id="resetButton">초기화</button>
+    </div>
+    <div id="result"></div>
   </div>
   <script src="script.js"></script>
 </body>
