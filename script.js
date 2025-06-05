@@ -1,69 +1,82 @@
-const menuInput = document.getElementById('menuInput');
-const addBtn = document.getElementById('addBtn');
-const menuList = document.getElementById('menuList');
-const pickBtn = document.getElementById('pickBtn');
-const resetBtn = document.getElementById('resetBtn');
-const result = document.getElementById('result');
+const menuInput = document.getElementById("menuInput");
+const addButton = document.getElementById("addButton");
+const pickButton = document.getElementById("pickButton");
+const resetButton = document.getElementById("resetButton");
+const menuList = document.getElementById("menuList");
+const resultBox = document.getElementById("resultBox");
+const result = document.getElementById("result");
+const lastPicked = document.getElementById("lastPicked");
 
-let menuItems = JSON.parse(localStorage.getItem('menus')) || [];
-
-function saveMenus() {
-  localStorage.setItem('menus', JSON.stringify(menuItems));
-}
+let menus = JSON.parse(localStorage.getItem("menus")) || [];
+let lastMenu = localStorage.getItem("lastPicked");
 
 function renderMenus() {
-  menuList.innerHTML = '';
-  menuItems.forEach((item, index) => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <span>${item}</span>
-      <button onclick="deleteMenu(${index})">삭제</button>
-    `;
+  menuList.innerHTML = "";
+  menus.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.textContent = item;
+    li.addEventListener("touchstart", handleTouchStart, { passive: true });
+    li.addEventListener("touchend", e => handleTouchEnd(e, index));
     menuList.appendChild(li);
   });
 }
 
-function deleteMenu(index) {
-  menuItems.splice(index, 1);
-  saveMenus();
-  renderMenus();
+let touchStartX = 0;
+function handleTouchStart(e) {
+  touchStartX = e.changedTouches[0].screenX;
 }
 
-addBtn.onclick = () => {
-  const newItem = menuInput.value.trim();
-  if (newItem) {
-    menuItems.push(newItem);
-    saveMenus();
+function handleTouchEnd(e, index) {
+  const touchEndX = e.changedTouches[0].screenX;
+  if (touchStartX - touchEndX > 50) {
+    menus.splice(index, 1);
+    localStorage.setItem("menus", JSON.stringify(menus));
     renderMenus();
-    menuInput.value = '';
   }
-};
+}
 
-pickBtn.onclick = () => {
-  if (menuItems.length === 0) {
-    alert('메뉴를 입력해주세요');
+function addMenu() {
+  const newMenu = menuInput.value.trim();
+  if (newMenu) {
+    menus.push(newMenu);
+    localStorage.setItem("menus", JSON.stringify(menus));
+    renderMenus();
+    menuInput.value = "";
+  }
+}
+
+function pickMenu() {
+  if (menus.length === 0) {
+    alert("메뉴를 입력해주세요");
     return;
   }
+  const index = Math.floor(Math.random() * menus.length);
+  const selected = menus[index];
+  result.textContent = selected;
+  resultBox.classList.remove("hidden");
+  localStorage.setItem("lastPicked", selected);
+  lastPicked.textContent = `최근 선택: ${selected}`;
+}
 
-  const random = Math.floor(Math.random() * menuItems.length);
-  const picked = menuItems[random];
-
-  result.textContent = picked;
-  result.classList.remove('hidden');
-  result.classList.add('show');
-
-  setTimeout(() => {
-    result.classList.remove('show');
-  }, 1000);
-};
-
-resetBtn.onclick = () => {
-  if (confirm('모든 메뉴를 삭제하고 초기화할까요?')) {
-    menuItems = [];
-    saveMenus();
+function resetApp() {
+  if (confirm("정말 초기화하시겠습니까?")) {
+    menus = [];
+    localStorage.clear();
+    resultBox.classList.add("hidden");
+    lastPicked.textContent = "";
     renderMenus();
-    result.classList.add('hidden');
   }
-};
+}
+
+addButton.addEventListener("click", addMenu);
+pickButton.addEventListener("click", pickMenu);
+resetButton.addEventListener("click", resetApp);
+menuInput.addEventListener("keypress", e => {
+  if (e.key === "Enter") addMenu();
+});
+
+if (lastMenu) {
+  lastPicked.textContent = `최근 선택: ${lastMenu}`;
+}
 
 renderMenus();
