@@ -2,182 +2,227 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>오늘 뭐 먹지?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>오늘 뭐먹지?</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      text-align: center;
-      padding: 30px;
-      background-color: #fefae0;
-    }
-
-    h1 {
-      color: #bc6c25;
-    }
-
-    input, button {
-      padding: 10px;
-      margin: 10px 5px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
-    }
-
-    input {
-      width: 80%;
-      max-width: 300px;
-    }
-
-    button {
-      background-color: #dda15e;
-      color: white;
-      cursor: pointer;
-    }
-
-    .delete-btn {
-      background-color: #bc6c25;
-      font-size: 14px;
-      padding: 2px 6px;
-    }
-
-    ul {
-      list-style: none;
+      font-family: 'Noto Sans KR', sans-serif;
+      background: #f9f9f9;
+      margin: 0;
       padding: 0;
     }
 
-    li {
-      margin: 5px 0;
+    .container {
+      max-width: 480px;
+      margin: 20px auto;
+      padding: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #3f51b5;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
       display: flex;
-      justify-content: center;
-      align-items: center;
+      flex-direction: column;
       gap: 10px;
+      margin-bottom: 20px;
     }
 
-    .result {
-      font-size: 24px;
-      margin-top: 20px;
-      color: #283618;
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: 1.5px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      transition: border-color 0.3s;
     }
 
-    /* 화면 전환용 */
-    .screen {
-      display: none;
+    input[type="text"]:focus {
+      border-color: #3f51b5;
+      outline: none;
     }
 
-    .active {
-      display: block;
+    .buttons-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
     }
 
-    /* 모바일 반응형 */
-    @media (max-width: 600px) {
-      input, button {
-        width: 100%;
-        font-size: 18px;
+    button {
+      flex: 1 1 140px;
+      padding: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      background-color: #3f51b5;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+      min-width: 140px;
+    }
+
+    button:hover {
+      background-color: #303f9f;
+    }
+
+    ul#menuList {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 20px;
+      max-height: 200px;
+      overflow-y: auto;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+    }
+
+    ul#menuList li {
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    ul#menuList li:last-child {
+      border-bottom: none;
+    }
+
+    ul#menuList button.delete-btn {
+      background: #e53935;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    ul#menuList button.delete-btn:hover {
+      background: #b71c1c;
+    }
+
+    #result {
+      text-align: center;
+      font-size: 20px;
+      color: #3f51b5;
+      min-height: 28px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    @media (min-width: 600px) {
+      .input-group {
+        flex-direction: row;
       }
-      .result {
-        font-size: 20px;
+      input[type="text"] {
+        flex: 1;
+      }
+      button {
+        flex: none;
+        min-width: 120px;
+      }
+      .buttons-row {
+        justify-content: flex-start;
       }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>오늘 뭐먹지?</h1>
+    <div class="input-group">
+      <input type="text" id="menuInput" placeholder="메뉴를 입력하세요" />
+      <button id="addMenuBtn">메뉴 추가</button>
+    </div>
 
-  <!-- 입력 화면 -->
-  <div id="inputScreen" class="screen active">
-    <h1>오늘 뭐 먹지?</h1>
-    <input type="text" id="menuInput" placeholder="메뉴를 입력하세요" />
-    <button onclick="addMenu()">추가</button>
     <ul id="menuList"></ul>
-    <button onclick="showResultScreen()">오늘 뭐 먹지?</button>
-    <button onclick="resetApp()">초기화</button>
-  </div>
 
-  <!-- 결과 화면 -->
-  <div id="resultScreen" class="screen">
-    <h1>추천 메뉴 🍽️</h1>
-    <div class="result" id="resultText"></div>
-    <button onclick="showInputScreen()">돌아가기</button>
+    <div id="result"></div>
+
+    <div class="buttons-row">
+      <button id="randomBtn">오늘 뭐먹지?</button>
+      <button id="resetBtn">초기화</button>
+    </div>
   </div>
 
   <script>
-    let menuList = [];
+    const menuInput = document.getElementById('menuInput');
+    const addMenuBtn = document.getElementById('addMenuBtn');
+    const menuList = document.getElementById('menuList');
+    const randomBtn = document.getElementById('randomBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const result = document.getElementById('result');
 
-    window.onload = function () {
-      const stored = localStorage.getItem("menuList");
-      if (stored) {
-        menuList = JSON.parse(stored);
-        updateMenuList();
-      }
-    };
+    let menus = JSON.parse(localStorage.getItem('menus') || '[]');
 
-    function addMenu() {
-      const input = document.getElementById("menuInput");
-      const menu = input.value.trim();
-      if (menu !== "") {
-        menuList.push(menu);
-        saveMenuList();
-        updateMenuList();
-        input.value = "";
-      }
+    function saveMenus() {
+      localStorage.setItem('menus', JSON.stringify(menus));
     }
 
-    function updateMenuList() {
-      const ul = document.getElementById("menuList");
-      ul.innerHTML = "";
-      menuList.forEach((menu, index) => {
-        const li = document.createElement("li");
+    function renderMenus() {
+      menuList.innerHTML = '';
+      menus.forEach((menu, index) => {
+        const li = document.createElement('li');
         li.textContent = menu;
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.textContent = "❌";
-        deleteBtn.className = "delete-btn";
-        deleteBtn.onclick = () => deleteMenu(index);
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '삭제';
+        delBtn.className = 'delete-btn';
+        delBtn.onclick = () => {
+          menus.splice(index, 1);
+          saveMenus();
+          renderMenus();
+          result.textContent = '';
+        };
 
-        li.appendChild(deleteBtn);
-        ul.appendChild(li);
+        li.appendChild(delBtn);
+        menuList.appendChild(li);
       });
     }
 
-    function deleteMenu(index) {
-      menuList.splice(index, 1);
-      saveMenuList();
-      updateMenuList();
-    }
-
-    function saveMenuList() {
-      localStorage.setItem("menuList", JSON.stringify(menuList));
-    }
-
-    function showResultScreen() {
-      if (menuList.length === 0) {
-        alert("메뉴를 입력해주세요");
+    addMenuBtn.addEventListener('click', () => {
+      const newMenu = menuInput.value.trim();
+      if (newMenu === '') {
+        alert('메뉴를 입력해주세요');
         return;
       }
-      const randomIndex = Math.floor(Math.random() * menuList.length);
-      const selectedMenu = menuList[randomIndex];
-      document.getElementById("resultText").textContent = `오늘은... "${selectedMenu}" 어때요?`;
-      switchScreen("resultScreen");
-    }
+      menus.push(newMenu);
+      menuInput.value = '';
+      saveMenus();
+      renderMenus();
+      result.textContent = '';
+    });
 
-    function showInputScreen() {
-      switchScreen("inputScreen");
-    }
+    randomBtn.addEventListener('click', () => {
+      if (menus.length === 0) {
+        alert('메뉴를 입력해주세요');
+        return;
+      }
+      const randomIndex = Math.floor(Math.random() * menus.length);
+      result.textContent = menus[randomIndex];
+    });
 
-    function switchScreen(screenId) {
-      document.querySelectorAll(".screen").forEach(screen => {
-        screen.classList.remove("active");
-      });
-      document.getElementById(screenId).classList.add("active");
-    }
+    resetBtn.addEventListener('click', () => {
+      if(confirm('모든 메뉴와 결과를 초기화할까요?')) {
+        menus = [];
+        saveMenus();
+        renderMenus();
+        result.textContent = '';
+      }
+    });
 
-    function resetApp() {
-      menuList = [];
-      localStorage.removeItem("menuList");
-      document.getElementById("menuList").innerHTML = "";
-      document.getElementById("resultText").textContent = "";
-      document.getElementById("menuInput").value = "";
-    }
+    // 초기 렌더링
+    renderMenus();
   </script>
 </body>
 </html>
