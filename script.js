@@ -1,102 +1,50 @@
-const menuInput = document.getElementById('menuInput');
-const addButton = document.getElementById('addButton');
-const menuList = document.getElementById('menuList');
-const randomButton = document.getElementById('randomButton');
-const resetButton = document.getElementById('resetButton');
-const result = document.getElementById('result');
+const menuInput = document.getElementById("menuInput");
+const addButton = document.getElementById("addButton");
+const menuList = document.getElementById("menuList");
+const pickButton = document.getElementById("pickButton");
+const resetButton = document.getElementById("resetButton");
 
-let menus = [];
+function addMenu(text) {
+  const item = document.createElement("div");
+  item.className = "menu-item";
 
-function renderMenus() {
-  menuList.innerHTML = '';
-  menus.forEach((menu, index) => {
-    const li = document.createElement('li');
-    li.textContent = menu;
+  const span = document.createElement("span");
+  span.textContent = text;
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = '✖';
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.onclick = () => {
-      menus.splice(index, 1);
-      renderMenus();
-    };
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "✖";
+  deleteBtn.className = "delete-button";
+  deleteBtn.onclick = () => item.remove();
 
-    li.appendChild(deleteBtn);
-    addSwipeEvents(li, index);
-    menuList.appendChild(li);
-  });
+  item.appendChild(span);
+  item.appendChild(deleteBtn);
+  menuList.appendChild(item);
 }
 
-function addSwipeEvents(el, index) {
-  let startX = 0;
-  let currentX = 0;
-  let isDragging = false;
-
-  el.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    isDragging = true;
-    el.classList.add('hold');
-  });
-
-  el.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    currentX = e.touches[0].clientX;
-    const diffX = currentX - startX;
-    if (diffX < 0) {
-      el.style.transform = `translateX(${diffX}px)`;
-    }
-  });
-
-  el.addEventListener('touchend', () => {
-    isDragging = false;
-    el.classList.remove('hold');
-    const diffX = currentX - startX;
-    if (diffX < -80) {
-      menus.splice(index, 1);
-      renderMenus();
-    } else {
-      el.style.transform = 'translateX(0)';
-    }
-  });
-}
-
-addButton.addEventListener('click', () => {
-  const menu = menuInput.value.trim();
-  if (menu !== '') {
-    menus.push(menu);
-    menuInput.value = '';
-    renderMenus();
+addButton.onclick = () => {
+  const text = menuInput.value.trim();
+  if (text) {
+    addMenu(text);
+    menuInput.value = "";
   }
-});
+};
 
-menuInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
+menuInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
     addButton.click();
   }
 });
 
-randomButton.addEventListener('click', () => {
-  if (menus.length === 0) {
-    result.textContent = '메뉴를 추가해주세요!';
-    return;
-  }
+pickButton.onclick = () => {
+  const items = document.querySelectorAll(".menu-item");
+  if (items.length === 0) return;
 
-  result.textContent = '';
-  let i = 0;
-  const interval = setInterval(() => {
-    result.textContent = menus[i % menus.length];
-    i++;
-  }, 80);
+  const index = Math.floor(Math.random() * items.length);
+  items.forEach((item, i) => {
+    item.classList.toggle("highlight", i === index);
+  });
+};
 
-  setTimeout(() => {
-    clearInterval(interval);
-    const final = menus[Math.floor(Math.random() * menus.length)];
-    result.textContent = `오늘은 "${final}" 어때요?`;
-  }, 1000);
-});
-
-resetButton.addEventListener('click', () => {
-  menus = [];
-  renderMenus();
-  result.textContent = '';
-});
+resetButton.onclick = () => {
+  menuList.innerHTML = "";
+};
