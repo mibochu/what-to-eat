@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>오늘 뭐먹지?</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘 뭐 먹지?</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
@@ -13,12 +13,11 @@
       <input type="text" id="menuInput" placeholder="메뉴를 입력하세요" />
       <button id="addButton">메뉴 추가</button>
     </div>
-    <ul id="menuList"></ul>
-    <div class="buttons">
-      <button id="randomButton">오늘 뭐먹지?</button>
+    <div id="menuList" class="menu-list"></div>
+    <div class="action-buttons">
+      <button id="pickButton">오늘 뭐먹지?</button>
       <button id="resetButton">초기화</button>
     </div>
-    <div id="result"></div>
   </div>
   <script src="script.js"></script>
 </body>
