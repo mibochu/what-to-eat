@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f9f9f9;
+}
+
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: #3b4cca;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+#menuInput {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+  border: 2px solid #daa520;
+  border-radius: 10px;
+}
+
+#addButton {
+  white-space: nowrap;
+  padding: 10px 14px;
+  font-size: 1rem;
+  background-color: #3b4cca;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+}
+
+.menu-list {
+  max-height: calc(3.5 * 60px); /* 약 3.5개 메뉴 높이 */
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding-right: 6px; /* 스크롤 안보이게 여유 */
+}
+
+.menu-item {
+  background: #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  font-weight: bold;
+}
+
+.delete-button {
+  background: red;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.action-buttons button {
+  flex: 1;
+  padding: 14px;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  background-color: #3b4cca;
+  color: white;
+}
+
+.highlight {
+  animation: pulse 0.4s ease-in-out;
+  background-color: #ffeb3b !important;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
