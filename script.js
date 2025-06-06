@@ -63,7 +63,7 @@ pickButton.onclick = () => {
   });
 
   const selectedMenu = items[index].querySelector("span").textContent;
-  selectedResult.textContent = `선택된 메뉴: ${selectedMenu}`;
+  selectedResult.textContent = `오늘 먹을 메뉴는: ${selectedMenu}`;
 };
 
 resetButton.onclick = () => {
