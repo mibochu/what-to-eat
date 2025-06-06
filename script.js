@@ -48,3 +48,26 @@ pickButton.onclick = () => {
 resetButton.onclick = () => {
   menuList.innerHTML = "";
 };
+const selectedResult = document.getElementById("selectedResult");
+
+pickButton.onclick = () => {
+  const items = document.querySelectorAll(".menu-item");
+  if (items.length === 0) {
+    selectedResult.textContent = ""; // 아무것도 없을 땐 지우기
+    return;
+  }
+
+  const index = Math.floor(Math.random() * items.length);
+  items.forEach((item, i) => {
+    item.classList.toggle("highlight", i === index);
+  });
+
+  const selectedMenu = items[index].querySelector("span").textContent;
+  selectedResult.textContent = `선택된 메뉴: ${selectedMenu}`;
+};
+
+resetButton.onclick = () => {
+  menuList.innerHTML = "";
+  selectedResult.textContent = "";
+};
+
