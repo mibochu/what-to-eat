@@ -2,27 +2,33 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>오늘 뭐 먹지?</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>오늘 뭐먹지?</h1>
-    <div class="input-group">
-      <input type="text" id="menuInput" placeholder="메뉴를 입력하세요" />
-      <button id="addButton">메뉴 추가</button>
-    </div>
-    <div id="menuList" class="menu-list"></div>
-    <div class="action-buttons">
-     <button id="pickButton">오늘 뭐먹지?</button>
-     <button id="resetButton">초기화</button>
+    <div class="header">
+      <h1>오늘 뭐 먹지? 🍽️</h1>
+      <button id="themeToggle">🌙</button>
     </div>
 
-    <!-- 추가된 선택 결과 표시 영역 -->
-    <div id="selectedResult" class="selected-result"></div>
+    <div class="input-group">
+      <input type="text" id="menuInput" placeholder="음식 이름을 입력하고 Enter" />
+      <ul id="autocompleteList"></ul>
+    </div>
+
+    <div class="toggle-group">
+      <label><input type="checkbox" id="toggleFavorites" /> ⭐ 즐겨찾기만 보기</label>
+    </div>
+
+    <ul id="menuList"></ul>
+
+    <button id="pickButton">오늘 뭐 먹지?</button>
+
+    <div id="result"></div>
   </div>
-  
+
   <script src="script.js"></script>
 </body>
 </html>
